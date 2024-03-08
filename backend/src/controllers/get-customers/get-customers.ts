@@ -17,7 +17,5 @@ export class GetCustomersController implements IGetCustomersController {
         body: "Something went wrong.",
       };
     }
-
-    return;
   }
 }
