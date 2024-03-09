@@ -1,5 +1,5 @@
 import express from "express";
-import { GetCustomersRepository } from "./repositories/get-customers/get-customers";
+import { PgGetCustomersRepository } from "./repositories/get-customers/pg-get-customers";
 import { GetCustomersController } from "./controllers/get-customers/get-customers";
 
 const app = express();
@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.get("/customers", async (req, res) => {
-  const getCustomersRepository = new GetCustomersRepository();
+  const getCustomersRepository = new PgGetCustomersRepository();
 
   const getCustomersController = new GetCustomersController(
     getCustomersRepository
