@@ -1,21 +1,44 @@
 import express from "express";
+import { config } from "dotenv";
 import { PgGetCustomersRepository } from "./repositories/get-customers/pg-get-customers";
 import { GetCustomersController } from "./controllers/get-customers/get-customers";
+import { PgCreateCustomerRepository } from "./repositories/create-customer/pg-create-customer";
+import { CreateCustomerController } from "./controllers/create-customer/create-customer";
 
-const app = express();
+const main = async () => {
+  config();
 
-const port = process.env.PORT || 5000;
+  const app = express();
 
-app.get("/customers", async (req, res) => {
-  const getCustomersRepository = new PgGetCustomersRepository();
+  const port = process.env.PORT || 5000;
 
-  const getCustomersController = new GetCustomersController(
-    getCustomersRepository
-  );
+  app.get("/customers", async (req, res) => {
+    const pgGetCustomersRepository = new PgGetCustomersRepository();
 
-  const { body, statusCode } = await getCustomersController.handle();
+    const getCustomersController = new GetCustomersController(
+      pgGetCustomersRepository
+    );
 
-  res.send(body).status(statusCode);
-});
+    const { body, statusCode } = await getCustomersController.handle();
 
-app.listen(port, () => console.log(`listening on port ${port}`));
+    res.send(body).status(statusCode);
+  });
+
+  app.post("/customers", async (req, res) => {
+    const pgCreateCustomerRepository = new PgCreateCustomerRepository();
+
+    const createCustomerController = new CreateCustomerController(
+      pgCreateCustomerRepository
+    );
+
+    const { body, statusCode } = await createCustomerController.handle({
+      body: req.body,
+    });
+
+    res.send(body).status(statusCode);
+  });
+
+  app.listen(port, () => console.log(`listening on port ${port}`));
+};
+
+main();
